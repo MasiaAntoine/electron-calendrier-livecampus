@@ -1,4 +1,4 @@
-import { renderCalendar } from "./calendar";
+import { renderCalendar } from "./calendar/calendar";
 
 document.addEventListener("DOMContentLoaded", () => {
   renderCalendar(new Date());
