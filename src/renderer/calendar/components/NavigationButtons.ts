@@ -1,5 +1,3 @@
-// calendar/components/NavigationButtons.ts
-
 export function getNavigationButtons(): string {
   return `
       <div id="navigation-buttons" class="flex">

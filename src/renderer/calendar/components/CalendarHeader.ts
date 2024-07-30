@@ -1,5 +1,3 @@
-// calendar/components/CalendarHeader.ts
-
 import { format } from "date-fns";
 
 export function getMonthHeader(date: Date): string {

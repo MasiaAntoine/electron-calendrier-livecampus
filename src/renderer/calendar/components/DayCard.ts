@@ -1,5 +1,3 @@
-// calendar/components/DayCard.ts
-
 import { format } from "date-fns";
 import { Event } from "../../interface/event";
 
