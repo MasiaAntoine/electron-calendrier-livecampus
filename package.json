@@ -4,13 +4,14 @@
   "main": "dist/main/main.js",
   "scripts": {
     "copy-index": "copyfiles -u 1 src/renderer/index.html dist/",
+    "copy-svg": "copyfiles -u 2 src/renderer/icons/**/* dist/renderer/",
     "start": "electron .",
     "clean": "rimraf dist",
     "dev": "tsc && electron .",
     "build:css": "tailwindcss -i ./src/styles/tailwind.css -o ./dist/tailwind.css",
     "build:backend": "tsc -p tsconfig.backend.json",
     "build:frontend": "webpack",
-    "build": "npm run clean && tsc && npm run build:backend && npm run build:frontend && npm run build:css && npm run copy-index"
+    "build": "npm run clean && tsc && npm run build:backend && npm run build:frontend && npm run build:css && npm run copy-index && npm run copy-svg"
   },
   "devDependencies": {
     "autoprefixer": "^10.0.0",

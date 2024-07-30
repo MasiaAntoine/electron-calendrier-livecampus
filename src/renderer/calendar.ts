@@ -20,8 +20,14 @@ function getMonthHeader(date: Date): string {
 
 function getNavigationButtons(): string {
   return `
-    <button id="prev-month" class="bg-blue-500 text-white p-2">Previous Month</button>
-    <button id="next-month" class="bg-blue-500 text-white p-2">Next Month</button>`;
+    <div id="navigation-buttons" class="flex">
+      <button id="prev-month" class="p-2">
+        <img src="./icons/prev-arrow.svg" alt="Previous Month" class="w-6 h-6"/>
+      </button>
+      <button id="next-month" class="p-2">
+        <img src="./icons/next-arrow.svg" alt="Next Month" class="w-6 h-6"/>
+      </button>
+    </div>`;
 }
 
 function getDaysInMonth(date: Date): number {
@@ -33,10 +39,15 @@ function getDayHTML(day: number, date: Date): string {
   const dayString = format(dayDate, "yyyy-MM-dd");
   const dayEvents = events.filter((event) => event.date === dayString);
 
-  let dayHTML = `<div class="border p-2 h-[12vh]"><div>${day}</div>`;
+  const isToday =
+    format(dayDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+
+  let dayHTML = `<div class="border p-2 h-[12vh] text-center"><span class="${
+    isToday ? "bg-blue-300 text-gray-900" : "bg-transparent text-black"
+  } rounded-full p-1">${day}</span>`;
 
   dayEvents.forEach((event) => {
-    dayHTML += `<div class="bg-green-200 p-1 mt-1">${event.title}</div>`;
+    dayHTML += `<div class="bg-green-200 p-1 mt-1 text-xs">${event.title}</div>`;
   });
 
   dayHTML += `</div>`;
@@ -48,7 +59,7 @@ function generateCalendarHTML(date: Date): string {
   const navigationButtons = getNavigationButtons();
   const daysInMonth = getDaysInMonth(date);
 
-  let calendarHTML = `<div>${monthHeader}${navigationButtons}<div class="grid grid-cols-6 gap-4 mt-4">`;
+  let calendarHTML = `<div><div class="flex items-center justify-between whitespace-nowrap">${monthHeader}${navigationButtons}</div><div class="grid grid-cols-6 gap-4 mt-4">`;
 
   for (let day = 1; day <= daysInMonth; day++) {
     calendarHTML += getDayHTML(day, date);
