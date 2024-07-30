@@ -4,7 +4,7 @@
   "main": "dist/main/main.js",
   "scripts": {
     "copy-index": "copyfiles -u 1 src/renderer/index.html dist/",
-    "start": "npm run build && tsc && electron .",
+    "start": "electron .",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && npm run build:css && npm run copy-index",
     "dev": "tsc && electron .",
