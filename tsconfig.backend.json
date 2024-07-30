@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "strict": true,
+    "esModuleInterop": true, // Peut rester activé pour le backend
+    "skipLibCheck": true,
+    "outDir": "./dist/main",
+    "rootDir": "./src/main",
+    "baseUrl": "./src"
+  },
+  "include": ["src/main/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
