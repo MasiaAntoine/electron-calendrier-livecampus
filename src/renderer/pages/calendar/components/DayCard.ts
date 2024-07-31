@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { Event } from "../../../interface/event";
-import { getEventTitle } from "./EventTitle";
+import { getEventTitle } from "./eventTitle";
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const dayDate = new Date(date.getFullYear(), date.getMonth(), day);

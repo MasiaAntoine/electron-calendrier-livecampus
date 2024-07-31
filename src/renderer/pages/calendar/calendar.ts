@@ -1,11 +1,11 @@
 import { getDaysInMonth } from "date-fns";
 import { Event } from "../../interface/event";
-import { getMonthHeader } from "./components/CalendarHeader";
-import { getDayHTML } from "./components/DayCard";
+import { getMonthHeader } from "./components/calendarHeader";
+import { getDayHTML } from "./components/dayCard";
 import {
   getNavigationButtons,
   setupEventListeners,
-} from "./components/NavigationButtons";
+} from "./components/navigationButtons";
 
 const events: Event[] = [
   {
