@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { Event } from "../../../interface/event";
 import { getEventTitle } from "./eventTitle";
+import { getAddEventFormHTML, setupAddEventForm } from "../../event/event";
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
@@ -10,7 +11,7 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const isToday =
     format(dayDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
 
-  let dayHTML = `<div class="border border-gray-200 m-[.1px] p-2 h-[18.4vh] text-right cursor-pointer"><span class="${
+  let dayHTML = `<div class="border border-gray-200 m-[.1px] p-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><span class="${
     isToday ? "bg-blue-500 text-gray-200" : "bg-transparent text-black"
   } rounded-full p-1">${day}</span>`;
 
@@ -20,4 +21,27 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
 
   dayHTML += `</div>`;
   return dayHTML;
+}
+
+// Fonction pour initialiser les événements de clic sur les cartes de jour
+export function setupDayCardClickHandlers(
+  events: Event[],
+  addEventCallback: (event: Event) => void
+): void {
+  const dayCards = document.querySelectorAll("[data-date]");
+
+  dayCards.forEach((card) => {
+    card.addEventListener("click", (e) => {
+      const target = e.currentTarget as HTMLElement;
+      const selectedDate = target.getAttribute("data-date");
+
+      if (selectedDate) {
+        document.body.insertAdjacentHTML(
+          "beforeend",
+          getAddEventFormHTML(selectedDate)
+        );
+        setupAddEventForm(addEventCallback);
+      }
+    });
+  });
 }

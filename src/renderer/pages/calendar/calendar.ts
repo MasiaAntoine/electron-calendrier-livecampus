@@ -1,7 +1,7 @@
 import { getDaysInMonth } from "date-fns";
 import { Event } from "../../interface/event";
 import { getMonthHeader } from "./components/calendarHeader";
-import { getDayHTML } from "./components/dayCard";
+import { getDayHTML, setupDayCardClickHandlers } from "./components/dayCard";
 import {
   getNavigationButtons,
   setupEventListeners,
@@ -65,9 +65,22 @@ export function renderCalendar(date: Date): void {
   if (appElement) {
     appElement.innerHTML = generateCalendarHTML(date);
     setupEventListeners(currentDate, setCurrentDate);
+    setupDayCardClickHandlers(events, addNewEvent);
   } else {
     console.error('Element with ID "app" not found');
   }
 }
 
-setupEventListeners(currentDate, setCurrentDate);
+// Fonction pour ajouter un nouvel événement et re-rendre le calendrier
+function addNewEvent(newEvent: Event): void {
+  events.push(newEvent);
+  renderCalendar(currentDate);
+}
+
+// Ajoute un écouteur pour redimensionner la fenêtre
+window.addEventListener("resize", () => {
+  renderCalendar(currentDate);
+});
+
+// Initialiser le calendrier
+renderCalendar(currentDate);
