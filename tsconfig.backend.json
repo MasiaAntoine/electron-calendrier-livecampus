@@ -5,7 +5,7 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "strict": true,
-    "esModuleInterop": true, // Peut rester activé pour le backend
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "outDir": "./dist/main",
     "rootDir": "./src/main",

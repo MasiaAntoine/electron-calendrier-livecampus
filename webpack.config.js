@@ -19,5 +19,5 @@ module.exports = {
       },
     ],
   },
-  mode: "development", // Utilisez 'production' pour les builds finaux
+  mode: "development",
 };
