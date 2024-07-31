@@ -15,12 +15,25 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
 
   const isToday = dayString === format(new Date(), "yyyy-MM-dd");
 
-  let dayHTML = `<div class="border border-gray-200 m-[.1px] py-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><span class="${
+  let dayHTML = `<div class="relative border border-gray-200 m-[.1px] py-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><span class="${
     isToday ? "bg-blue-500 text-gray-200" : "bg-transparent text-black"
   } rounded-full p-1">${day}</span>`;
 
-  dayEvents.forEach((event) => {
-    dayHTML += getEventTitle(event.titre, event.color);
+  const firstDayEvents = dayEvents.filter((event) => {
+    const eventStartDate = format(new Date(event.date_deb), "yyyy-MM-dd");
+    return dayString === eventStartDate;
+  });
+
+  firstDayEvents.forEach((event) => {
+    const eventStartDate = new Date(event.date_deb);
+    const eventEndDate = new Date(event.date_fin);
+    const daysSpan =
+      (eventEndDate.getTime() - eventStartDate.getTime()) /
+        (1000 * 60 * 60 * 24) +
+      1;
+    const width = 14.1 * daysSpan;
+
+    dayHTML += getEventTitle(event.titre, event.color, width);
   });
 
   dayHTML += `</div>`;

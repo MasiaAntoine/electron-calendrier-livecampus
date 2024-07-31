@@ -1,6 +1,17 @@
-export function getEventTitle(event: string, color: string): string {
+export function getEventTitle(
+  event: string,
+  color: string,
+  width: number
+): string {
   const textColor = getContrastColor(color);
-  return `<div class="py-1 px-2 mt-1 text-xs" style="color: ${textColor}; background-color:${color};">${event}</div>`;
+
+  return `
+    <div 
+      class="absolute top-8 left-0 py-1 px-2 mt-1 text-xs overflow-hidden text-left"
+      style="color: ${textColor}; background-color: ${color}; width: ${width}vw; z-index: 10; border-radius: 4px;">
+      ${event}
+    </div>
+  `;
 }
 
 function getContrastColor(hexColor: string): string {
