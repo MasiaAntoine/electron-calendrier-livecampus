@@ -49,7 +49,7 @@ function generateCalendarHTML(date: Date): string {
   const navigationButtons = getNavigationButtons();
   const daysInMonth = getDaysInMonth(date);
 
-  let calendarHTML = `<div><div class="flex items-center justify-between whitespace-nowrap">${monthHeader}${navigationButtons}</div><div class="grid grid-cols-6 gap-4 mt-4">`;
+  let calendarHTML = `<div><div class="flex items-center justify-between whitespace-nowrap">${monthHeader}${navigationButtons}</div><div class="grid grid-cols-7 px-1">`;
 
   for (let day = 1; day <= daysInMonth; day++) {
     const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
