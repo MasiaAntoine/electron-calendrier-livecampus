@@ -18,13 +18,13 @@ export function getEventFormHTML(
 
   return `
     <div class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white p-6 rounded shadow-lg w-96 mx-auto">
+      <div class="bg-white p-6 rounded shadow-lg w-[45vw] h-[95vh] mx-auto overflow-y-auto">
         <h2 class="text-2xl font-semibold mb-4">${formTitle}</h2>
         <form id="event-form">
           <div class="mb-4">
             <label for="event-title" class="block text-sm font-medium text-gray-700">Titre</label>
-            <input type="text" id="event-title" name="title" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
-              eventToEdit ? eventToEdit.title : ""
+            <input type="text" id="event-title" name="titre" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
+              eventToEdit ? eventToEdit.titre : ""
             }" required>
           </div>
           <div class="mb-4">
@@ -34,10 +34,46 @@ export function getEventFormHTML(
             }</textarea>
           </div>
           <div class="mb-4">
-            <label for="event-date" class="block text-sm font-medium text-gray-700">Date</label>
-            <input type="date" id="event-date" name="date" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
-              eventToEdit ? eventToEdit.date : selectedDate
+            <label for="event-date-deb" class="block text-sm font-medium text-gray-700">Date de début</label>
+            <input type="date" id="event-date-deb" name="date_deb" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
+              eventToEdit ? formatDate(eventToEdit.date_deb) : selectedDate
             }" required>
+          </div>
+          <div class="mb-4">
+            <label for="event-date-fin" class="block text-sm font-medium text-gray-700">Date de fin</label>
+            <input type="date" id="event-date-fin" name="date_fin" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
+              eventToEdit ? formatDate(eventToEdit.date_fin) : selectedDate
+            }" required>
+          </div>
+          <div class="mb-4">
+            <label for="event-location" class="block text-sm font-medium text-gray-700">Location</label>
+            <input type="text" id="event-location" name="location" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
+              eventToEdit ? eventToEdit.location : ""
+            }">
+          </div>
+          <div class="mb-4">
+            <label for="event-categorie" class="block text-sm font-medium text-gray-700">Catégorie</label>
+            <input type="text" id="event-categorie" name="categorie" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
+              eventToEdit ? eventToEdit.categorie : ""
+            }">
+          </div>
+          <div class="mb-4">
+            <label for="event-statut" class="block text-sm font-medium text-gray-700">Statut</label>
+            <input type="text" id="event-statut" name="statut" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
+              eventToEdit ? eventToEdit.statut : ""
+            }">
+          </div>
+          <div class="mb-4">
+            <label for="event-transparence" class="block text-sm font-medium text-gray-700">Transparence</label>
+            <input type="text" id="event-transparence" name="transparence" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
+              eventToEdit ? eventToEdit.transparence : ""
+            }">
+          </div>
+          <div class="mb-4">
+            <label for="event-nbMaj" class="block text-sm font-medium text-gray-700">Nombre de modifications</label>
+            <input type="number" id="event-nbMaj" name="nbMaj" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
+              eventToEdit ? eventToEdit.nbMaj : 0
+            }">
           </div>
           <div class="mb-4 flex items-center">
             <label for="event-color" class="block text-sm font-medium text-gray-700">Couleur</label>
@@ -60,7 +96,10 @@ export function getEventFormHTML(
     </div>`;
 }
 
-export function setupEventForm(eventToEdit?: Event): void {
+export function setupEventForm(
+  eventToEdit?: Event,
+  callback?: (event: Event) => void
+): void {
   const formElement = document.getElementById("event-form");
   const cancelButton = document.getElementById("cancel-event");
   const deleteButton = document.getElementById("delete-event");
@@ -76,15 +115,41 @@ export function setupEventForm(eventToEdit?: Event): void {
       const description = (
         document.getElementById("event-description") as HTMLTextAreaElement
       ).value;
-      const date = (document.getElementById("event-date") as HTMLInputElement)
-        .value;
+      const dateDeb = new Date(
+        (document.getElementById("event-date-deb") as HTMLInputElement).value
+      );
+      const dateFin = new Date(
+        (document.getElementById("event-date-fin") as HTMLInputElement).value
+      );
+      const location = (
+        document.getElementById("event-location") as HTMLInputElement
+      ).value;
+      const categorie = (
+        document.getElementById("event-categorie") as HTMLInputElement
+      ).value;
+      const statut = (
+        document.getElementById("event-statut") as HTMLInputElement
+      ).value;
+      const transparence = (
+        document.getElementById("event-transparence") as HTMLInputElement
+      ).value;
+      const nbMaj = parseInt(
+        (document.getElementById("event-nbMaj") as HTMLInputElement).value,
+        10
+      );
       const color = colorInput.value;
 
       const newEvent: Event = {
         id: eventToEdit ? eventToEdit.id : Date.now(),
-        title,
+        titre: title,
         description,
-        date,
+        date_deb: dateDeb,
+        date_fin: dateFin,
+        location,
+        categorie,
+        statut,
+        transparence,
+        nbMaj,
         color,
       };
 
@@ -129,4 +194,8 @@ export function closeEventForm(): void {
   if (formElement) {
     formElement.remove();
   }
+}
+
+function formatDate(date: Date): string {
+  return date.toISOString().split("T")[0];
 }

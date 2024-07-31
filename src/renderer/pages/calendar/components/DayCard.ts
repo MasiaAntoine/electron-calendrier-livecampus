@@ -6,17 +6,21 @@ import { getEventFormHTML, setupEventForm } from "../../event/event";
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
   const dayString = format(dayDate, "yyyy-MM-dd");
-  const dayEvents = events.filter((event) => event.date === dayString);
 
-  const isToday =
-    format(dayDate, "yyyy-MM-dd") === format(new Date(), "yyyy-MM-dd");
+  const dayEvents = events.filter((event) => {
+    const eventDateDeb = format(new Date(event.date_deb), "yyyy-MM-dd");
+    const eventDateFin = format(new Date(event.date_fin), "yyyy-MM-dd");
+    return dayString >= eventDateDeb && dayString <= eventDateFin;
+  });
 
-  let dayHTML = `<div class="border border-gray-200 m-[.1px] p-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><span class="${
+  const isToday = dayString === format(new Date(), "yyyy-MM-dd");
+
+  let dayHTML = `<div class="border border-gray-200 m-[.1px] py-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><span class="${
     isToday ? "bg-blue-500 text-gray-200" : "bg-transparent text-black"
   } rounded-full p-1">${day}</span>`;
 
   dayEvents.forEach((event) => {
-    dayHTML += getEventTitle(event.title, event.color);
+    dayHTML += getEventTitle(event.titre, event.color);
   });
 
   dayHTML += `</div>`;
@@ -36,7 +40,11 @@ export function setupDayCardClickHandlers(
       const selectedDate = target.getAttribute("data-date");
 
       if (selectedDate) {
-        const dayEvents = events.filter((event) => event.date === selectedDate);
+        const selectedDateObj = new Date(selectedDate);
+        const dayEvents = events.filter((event) => {
+          const eventDateDeb = new Date(event.date_deb);
+          return eventDateDeb.toISOString().split("T")[0] === selectedDate;
+        });
 
         if (dayEvents.length > 0) {
           const eventToEdit = dayEvents[0];
@@ -44,13 +52,13 @@ export function setupDayCardClickHandlers(
             "beforeend",
             getEventFormHTML(selectedDate, eventToEdit)
           );
-          setupEventForm(eventToEdit);
+          setupEventForm(eventToEdit, editEventCallback);
         } else {
           document.body.insertAdjacentHTML(
             "beforeend",
             getEventFormHTML(selectedDate)
           );
-          setupEventForm();
+          setupEventForm(undefined, addEventCallback);
         }
       }
     });
