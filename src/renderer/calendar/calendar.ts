@@ -1,8 +1,11 @@
-import { addMonths, subMonths } from "date-fns";
+import { getDaysInMonth } from "date-fns";
 import { Event } from "../interface/event";
 import { getMonthHeader } from "./components/CalendarHeader";
 import { getDayHTML } from "./components/DayCard";
-import { getNavigationButtons } from "./components/NavigationButtons";
+import {
+  getNavigationButtons,
+  setupEventListeners,
+} from "./components/NavigationButtons";
 
 const events: Event[] = [
   {
@@ -37,8 +40,8 @@ const events: Event[] = [
 
 export let currentDate: Date = new Date();
 
-function getDaysInMonth(date: Date): number {
-  return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+export function setCurrentDate(newDate: Date): void {
+  currentDate = newDate;
 }
 
 function generateCalendarHTML(date: Date): string {
@@ -49,7 +52,8 @@ function generateCalendarHTML(date: Date): string {
   let calendarHTML = `<div><div class="flex items-center justify-between whitespace-nowrap">${monthHeader}${navigationButtons}</div><div class="grid grid-cols-6 gap-4 mt-4">`;
 
   for (let day = 1; day <= daysInMonth; day++) {
-    calendarHTML += getDayHTML(day, date, events);
+    const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
+    calendarHTML += getDayHTML(day, dayDate, events);
   }
 
   calendarHTML += `</div></div></div>`;
@@ -60,27 +64,10 @@ export function renderCalendar(date: Date): void {
   const appElement = document.getElementById("app");
   if (appElement) {
     appElement.innerHTML = generateCalendarHTML(date);
-    setupEventListeners();
+    setupEventListeners(currentDate, setCurrentDate);
   } else {
     console.error('Element with ID "app" not found');
   }
 }
 
-function setupEventListeners(): void {
-  const prevButton = document.getElementById("prev-month");
-  const nextButton = document.getElementById("next-month");
-
-  if (prevButton && nextButton) {
-    prevButton.addEventListener("click", () => {
-      currentDate = subMonths(currentDate, 1);
-      renderCalendar(currentDate);
-    });
-
-    nextButton.addEventListener("click", () => {
-      currentDate = addMonths(currentDate, 1);
-      renderCalendar(currentDate);
-    });
-  } else {
-    console.error("Navigation buttons not found");
-  }
-}
+setupEventListeners(currentDate, setCurrentDate);
