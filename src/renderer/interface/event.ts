@@ -1,7 +1,13 @@
 export interface Event {
   id: number;
-  title: string;
+  titre: string;
   description: string;
-  date: string; // Format YYYY-MM-DD
+  date_deb: string;
+  date_fin: string;
+  location: string;
+  categorie: string;
+  statut: string;
+  transparence: string;
+  nbMaj: number;
   color: string;
 }
