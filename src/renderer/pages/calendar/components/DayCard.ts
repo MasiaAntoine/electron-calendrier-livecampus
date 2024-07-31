@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { Event } from "../../interface/event";
+import { Event } from "../../../interface/event";
 import { getEventTitle } from "./EventTitle";
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {

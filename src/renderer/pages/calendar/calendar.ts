@@ -1,5 +1,5 @@
 import { getDaysInMonth } from "date-fns";
-import { Event } from "../interface/event";
+import { Event } from "../../interface/event";
 import { getMonthHeader } from "./components/CalendarHeader";
 import { getDayHTML } from "./components/DayCard";
 import {
