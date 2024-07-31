@@ -5,12 +5,19 @@ import { getDayHTML } from "./components/DayCard";
 import { getNavigationButtons } from "./components/NavigationButtons";
 
 const events: Event[] = [
-  { id: 1, title: "Meeting", description: "Team meeting", date: "2024-07-31" },
+  {
+    id: 1,
+    title: "Meeting",
+    description: "Team meeting",
+    date: "2024-07-31",
+    color: "#ff8686",
+  },
   {
     id: 2,
     title: "Birthday Party",
     description: "Friend's birthday",
     date: "2024-08-01",
+    color: "#0d26a2",
   },
 ];
 
