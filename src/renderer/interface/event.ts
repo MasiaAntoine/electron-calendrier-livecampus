@@ -2,8 +2,8 @@ export interface Event {
   id: number;
   titre: string;
   description: string;
-  date_deb: string;
-  date_fin: string;
+  date_deb: Date;
+  date_fin: Date;
   location: string;
   categorie: string;
   statut: string;
