@@ -7,7 +7,7 @@ import {
   setupEventListeners,
 } from "./components/navigationButtons";
 
-const events: Event[] = [
+export let events: Event[] = [
   {
     id: 1,
     title: "Meeting",
@@ -65,22 +65,32 @@ export function renderCalendar(date: Date): void {
   if (appElement) {
     appElement.innerHTML = generateCalendarHTML(date);
     setupEventListeners(currentDate, setCurrentDate);
-    setupDayCardClickHandlers(events, addNewEvent);
+    setupDayCardClickHandlers(events, addNewEvent, editEvent);
   } else {
     console.error('Element with ID "app" not found');
   }
 }
 
-// Fonction pour ajouter un nouvel événement et re-rendre le calendrier
-function addNewEvent(newEvent: Event): void {
+export function addNewEvent(newEvent: Event): void {
   events.push(newEvent);
   renderCalendar(currentDate);
 }
 
-// Ajoute un écouteur pour redimensionner la fenêtre
+export function editEvent(updatedEvent: Event): void {
+  const eventIndex = events.findIndex((event) => event.id === updatedEvent.id);
+  if (eventIndex > -1) {
+    events[eventIndex] = updatedEvent;
+    renderCalendar(currentDate);
+  }
+}
+
+export function deleteEvent(eventToDelete: Event): void {
+  events = events.filter((event) => event.id !== eventToDelete.id);
+  renderCalendar(currentDate);
+}
+
 window.addEventListener("resize", () => {
   renderCalendar(currentDate);
 });
 
-// Initialiser le calendrier
 renderCalendar(currentDate);

@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { Event } from "../../../interface/event";
 import { getEventTitle } from "./eventTitle";
-import { getAddEventFormHTML, setupAddEventForm } from "../../event/event";
+import { getEventFormHTML, setupEventForm } from "../../event/event";
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
@@ -23,10 +23,10 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
   return dayHTML;
 }
 
-// Fonction pour initialiser les événements de clic sur les cartes de jour
 export function setupDayCardClickHandlers(
   events: Event[],
-  addEventCallback: (event: Event) => void
+  addEventCallback: (event: Event) => void,
+  editEventCallback: (event: Event) => void
 ): void {
   const dayCards = document.querySelectorAll("[data-date]");
 
@@ -36,11 +36,22 @@ export function setupDayCardClickHandlers(
       const selectedDate = target.getAttribute("data-date");
 
       if (selectedDate) {
-        document.body.insertAdjacentHTML(
-          "beforeend",
-          getAddEventFormHTML(selectedDate)
-        );
-        setupAddEventForm(addEventCallback);
+        const dayEvents = events.filter((event) => event.date === selectedDate);
+
+        if (dayEvents.length > 0) {
+          const eventToEdit = dayEvents[0];
+          document.body.insertAdjacentHTML(
+            "beforeend",
+            getEventFormHTML(selectedDate, eventToEdit)
+          );
+          setupEventForm(eventToEdit);
+        } else {
+          document.body.insertAdjacentHTML(
+            "beforeend",
+            getEventFormHTML(selectedDate)
+          );
+          setupEventForm();
+        }
       }
     });
   });
