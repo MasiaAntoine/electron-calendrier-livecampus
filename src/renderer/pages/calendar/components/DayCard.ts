@@ -19,18 +19,31 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
     isToday ? "bg-blue-500 text-gray-200" : "bg-transparent text-black"
   } rounded-full p-1">${day}</span>`;
 
+  // Get the first and last day of the current month
+  const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+  const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
   const firstDayEvents = dayEvents.filter((event) => {
-    const eventStartDate = format(new Date(event.date_deb), "yyyy-MM-dd");
-    return dayString === eventStartDate;
+    const eventStartDate = new Date(event.date_deb);
+    return dayString === format(eventStartDate, "yyyy-MM-dd");
   });
 
   firstDayEvents.forEach((event) => {
     const eventStartDate = new Date(event.date_deb);
     const eventEndDate = new Date(event.date_fin);
+
+    // Adjust start and end dates to fit within the current month
+    const adjustedStartDate =
+      eventStartDate < startOfMonth ? startOfMonth : eventStartDate;
+    const adjustedEndDate =
+      eventEndDate > endOfMonth ? endOfMonth : eventEndDate;
+
     const daysSpan =
-      (eventEndDate.getTime() - eventStartDate.getTime()) /
+      (adjustedEndDate.getTime() - adjustedStartDate.getTime()) /
         (1000 * 60 * 60 * 24) +
       1;
+
+    // Calculate width based on the number of days within the current month
     const width = 14.1 * daysSpan;
 
     dayHTML += getEventTitle(event.titre, event.color, width);
