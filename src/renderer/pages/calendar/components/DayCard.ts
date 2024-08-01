@@ -15,11 +15,10 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
 
   const isToday = dayString === format(new Date(), "yyyy-MM-dd");
 
-  let dayHTML = `<div class="relative border border-gray-200 m-[.1px] py-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><span class="${
+  let dayHTML = `<div class="relative border border-gray-200 m-[.1px] py-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><div class="${
     isToday ? "bg-blue-500 text-gray-200" : "bg-transparent text-black"
-  } rounded-full p-1">${day}</span>`;
+  } rounded-full size-6 flex items-center justify-center">${day}</div>`;
 
-  // Get the first and last day of the current month
   const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
@@ -32,7 +31,6 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
     const eventStartDate = new Date(event.date_deb);
     const eventEndDate = new Date(event.date_fin);
 
-    // Adjust start and end dates to fit within the current month
     const adjustedStartDate =
       eventStartDate < startOfMonth ? startOfMonth : eventStartDate;
     const adjustedEndDate =
@@ -43,7 +41,6 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
         (1000 * 60 * 60 * 24) +
       1;
 
-    // Calculate width based on the number of days within the current month
     const width = 14.1 * daysSpan;
 
     dayHTML += getEventTitle(event.titre, event.color, width);
