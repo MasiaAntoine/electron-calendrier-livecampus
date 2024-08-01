@@ -74,12 +74,13 @@ export function setupDayCardClickHandlers(
       const selectedDate = target.getAttribute("data-date");
 
       if (selectedDate) {
-        const selectedDateObj = new Date(selectedDate);
-        document.body.insertAdjacentHTML(
-          "beforeend",
-          getEventFormHTML(selectedDate)
-        );
-        setupEventForm(undefined, addEventCallback);
+        console.log(selectedDate);
+        // document.body.insertAdjacentHTML(
+        //   "beforeend",
+        //   getEventFormHTML(selectedDate)
+        // );
+        // setupEventForm(undefined, addEventCallback);
+        window.electron.send("open-event-window", selectedDate);
       }
     });
   });
