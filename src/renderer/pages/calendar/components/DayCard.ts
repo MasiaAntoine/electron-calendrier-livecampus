@@ -17,7 +17,7 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
 
   let dayHTML = `<div class="relative border border-gray-200 m-[.1px] py-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><div class="${
     isToday ? "bg-blue-500 text-gray-200" : "bg-transparent text-black"
-  } rounded-full size-6 flex items-center justify-center">${day}</div>`;
+  } rounded-full size-6 flex items-center justify-center ml-2">${day}</div>`;
 
   const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
