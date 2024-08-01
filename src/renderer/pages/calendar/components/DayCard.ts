@@ -1,6 +1,7 @@
 import { format, eachDayOfInterval } from "date-fns";
 import { Event } from "../../../interface/event";
 import { getEventFormHTML, setupEventForm } from "../../event/event";
+import { getEventTitle } from "./eventTitle";
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
@@ -44,9 +45,14 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
 
     const eventIndicator = `(${dayIndex + 1}/${daysSpan})`; // Créer l'indicateur
 
-    dayHTML += `<div class="flex justify-between items-center p-1 rounded mt-1 text-xs overflow-hidden whitespace-nowrap text-white" style="background-color: ${event.color};">
-        <span>${event.titre}</span> <span>${eventIndicator}</span>
-      </div>`;
+    // Utilisez la fonction getEventTitle pour générer le HTML du titre de l'événement
+    const eventTitleHTML = getEventTitle(
+      event.titre,
+      event.color,
+      eventIndicator
+    );
+
+    dayHTML += eventTitleHTML;
   });
 
   dayHTML += `</div>`;
