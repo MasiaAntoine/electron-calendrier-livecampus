@@ -52,7 +52,9 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
       eventIndicator
     );
 
-    dayHTML += eventTitleHTML;
+    dayHTML += `<div class="event-title" data-event-id="${event.id}">
+      ${eventTitleHTML}
+    </div>`;
   });
 
   dayHTML += `</div>`;
@@ -73,24 +75,37 @@ export function setupDayCardClickHandlers(
 
       if (selectedDate) {
         const selectedDateObj = new Date(selectedDate);
-        const dayEvents = events.filter((event) => {
-          const eventDateDeb = new Date(event.date_deb);
-          return eventDateDeb.toISOString().split("T")[0] === selectedDate;
-        });
+        document.body.insertAdjacentHTML(
+          "beforeend",
+          getEventFormHTML(selectedDate)
+        );
+        setupEventForm(undefined, addEventCallback);
+      }
+    });
+  });
 
-        if (dayEvents.length > 0) {
-          const eventToEdit = dayEvents[0];
+  // Ajout de l'écouteur d'événements pour les titres d'événements
+  const eventTitles = document.querySelectorAll(".event-title");
+
+  eventTitles.forEach((title) => {
+    title.addEventListener("click", (e) => {
+      e.stopPropagation(); // Empêche la propagation à l'élément parent
+      const target = e.currentTarget as HTMLElement;
+      const eventId = target.getAttribute("data-event-id");
+
+      if (eventId) {
+        const eventToEdit = events.find(
+          (event) => event.id === parseInt(eventId)
+        );
+        if (eventToEdit) {
           document.body.insertAdjacentHTML(
             "beforeend",
-            getEventFormHTML(selectedDate, eventToEdit)
+            getEventFormHTML(
+              eventToEdit.date_deb.toISOString().split("T")[0],
+              eventToEdit
+            )
           );
           setupEventForm(eventToEdit, editEventCallback);
-        } else {
-          document.body.insertAdjacentHTML(
-            "beforeend",
-            getEventFormHTML(selectedDate)
-          );
-          setupEventForm(undefined, addEventCallback);
         }
       }
     });
