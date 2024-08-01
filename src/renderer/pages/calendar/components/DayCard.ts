@@ -1,49 +1,52 @@
-import { format } from "date-fns";
+import { format, eachDayOfInterval } from "date-fns";
 import { Event } from "../../../interface/event";
-import { getEventTitle } from "./eventTitle";
 import { getEventFormHTML, setupEventForm } from "../../event/event";
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
   const dayString = format(dayDate, "yyyy-MM-dd");
 
-  const dayEvents = events.filter((event) => {
-    const eventDateDeb = format(new Date(event.date_deb), "yyyy-MM-dd");
-    const eventDateFin = format(new Date(event.date_fin), "yyyy-MM-dd");
-    return dayString >= eventDateDeb && dayString <= eventDateFin;
-  });
+  // Filtrer les événements pour le jour courant
+  const dayEvents = events
+    .filter((event) => {
+      const eventDateDeb = format(new Date(event.date_deb), "yyyy-MM-dd");
+      const eventDateFin = format(new Date(event.date_fin), "yyyy-MM-dd");
+      return dayString >= eventDateDeb && dayString <= eventDateFin;
+    })
+    // Trier les événements par date de début
+    .sort(
+      (a, b) => new Date(a.date_deb).getTime() - new Date(b.date_deb).getTime()
+    );
 
   const isToday = dayString === format(new Date(), "yyyy-MM-dd");
 
-  let dayHTML = `<div class="relative border border-gray-200 m-[.1px] py-2 h-[18.4vh] text-right cursor-pointer" data-date="${dayString}"><div class="${
-    isToday ? "bg-blue-500 text-gray-200" : "bg-transparent text-black"
-  } rounded-full size-6 flex items-center justify-center ml-2">${day}</div>`;
+  // Initialisation du HTML pour le jour
+  let dayHTML = `<div class="border border-gray-200 m-[.1px] p-2 h-[18.4vh] cursor-pointer" data-date="${dayString}">
+    <div class="${
+      isToday ? "bg-blue-500 text-gray-200" : "bg-transparent text-black"
+    } rounded-full flex items-center justify-center mx-auto w-6 h-6">${day}</div>`;
 
-  const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-  const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-
-  const firstDayEvents = dayEvents.filter((event) => {
-    const eventStartDate = new Date(event.date_deb);
-    return dayString === format(eventStartDate, "yyyy-MM-dd");
-  });
-
-  firstDayEvents.forEach((event) => {
+  // Ajouter un bloc d'événement pour chaque événement du jour
+  dayEvents.forEach((event) => {
     const eventStartDate = new Date(event.date_deb);
     const eventEndDate = new Date(event.date_fin);
+    const daysSpan = eachDayOfInterval({
+      start: eventStartDate,
+      end: eventEndDate,
+    }).length;
 
-    const adjustedStartDate =
-      eventStartDate < startOfMonth ? startOfMonth : eventStartDate;
-    const adjustedEndDate =
-      eventEndDate > endOfMonth ? endOfMonth : eventEndDate;
+    // Calculez la position du jour actuel dans la durée de l'événement
+    const startIndex = Math.max(
+      0,
+      (dayDate.getTime() - eventStartDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    const dayIndex = Math.min(daysSpan - 1, Math.round(startIndex));
 
-    const daysSpan =
-      (adjustedEndDate.getTime() - adjustedStartDate.getTime()) /
-        (1000 * 60 * 60 * 24) +
-      1;
+    const eventIndicator = `(${dayIndex + 1}/${daysSpan})`; // Créer l'indicateur
 
-    const width = 14.1 * daysSpan;
-
-    dayHTML += getEventTitle(event.titre, event.color, width);
+    dayHTML += `<div class="flex justify-between items-center p-1 rounded mt-1 text-xs overflow-hidden whitespace-nowrap text-white" style="background-color: ${event.color};">
+        <span>${event.titre}</span> <span>${eventIndicator}</span>
+      </div>`;
   });
 
   dayHTML += `</div>`;
