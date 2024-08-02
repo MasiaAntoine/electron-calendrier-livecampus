@@ -167,5 +167,5 @@ export const categories = [
 
 export function getCategoryColor(categoryName: string): string {
   const category = categories.find((cat) => cat.nameCat === categoryName);
-  return category ? category.color : "#ffffff";
+  return category ? category.color : "#fafafa";
 }
