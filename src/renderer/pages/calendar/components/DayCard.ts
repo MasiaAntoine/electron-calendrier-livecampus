@@ -1,6 +1,13 @@
 import { format, eachDayOfInterval } from "date-fns";
 import { Event } from "../../../interface/event";
 import { getEventTitle } from "./eventTitle";
+import { categories } from "../../../resources/data/categoryList"; // Importer les catégories
+
+// Fonction pour obtenir la couleur de la catégorie
+function getCategoryColor(categoryName: string): string {
+  const category = categories.find((cat) => cat.nameCat === categoryName);
+  return category ? category.color : "#ffffff"; // Retourner une couleur par défaut si la catégorie n'est pas trouvée
+}
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
@@ -44,10 +51,13 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
 
     const eventIndicator = `(${dayIndex + 1}/${daysSpan})`; // Créer l'indicateur
 
+    // Obtenez la couleur de la catégorie
+    const categoryColor = getCategoryColor(event.categorie);
+
     // Utilisez la fonction getEventTitle pour générer le HTML du titre de l'événement
     const eventTitleHTML = getEventTitle(
       event.titre,
-      event.color,
+      categoryColor, // Utilisez la couleur de la catégorie
       eventIndicator
     );
 
