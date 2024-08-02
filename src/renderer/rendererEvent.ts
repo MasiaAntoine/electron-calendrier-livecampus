@@ -1,5 +1,5 @@
 import { Event } from "./interface/event";
-import { categories } from "./resources/data/categoryList";
+import { categories, getCategoryColor } from "./resources/data/categoryList";
 
 const appElement = document.getElementById("event-container");
 
@@ -14,8 +14,9 @@ function renderEventForm(
         ? formatDate(new Date(eventData.date_deb))
         : date || formatDate(new Date());
 
-    // Détermine la couleur par défaut en fonction de l'événement ou une couleur par défaut
-    const colorValue = eventData ? eventData.color : "#ffffff";
+    // Détermine la couleur par défaut en fonction de la catégorie de l'événement ou une couleur par défaut
+    const defaultCategory = eventData ? eventData.categorie : "";
+    const colorValue = getCategoryColor(defaultCategory);
 
     // Générer les options du menu déroulant à partir du JSON
     const categoryOptions = categories
@@ -172,9 +173,10 @@ function renderEventForm(
           statut,
           transparence,
           nbMaj,
-          color: colorPreview ? colorPreview.style.backgroundColor : "#ffffff",
         };
 
+        // Envoyer l'événement modifié ou ajouté
+        window.electron.send("event-form-submit", newEvent);
         closeEventForm();
       });
     }
@@ -188,6 +190,7 @@ function renderEventForm(
     if (deleteButton) {
       deleteButton.addEventListener("click", () => {
         if (eventData) {
+          window.electron.send("event-delete", eventData.id);
           closeEventForm();
         }
       });

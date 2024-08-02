@@ -9,5 +9,4 @@ export interface Event {
   statut: string;
   transparence: string;
   nbMaj: number;
-  color: string;
 }

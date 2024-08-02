@@ -19,7 +19,6 @@ export let events: Event[] = [
     statut: "Scheduled",
     transparence: "Opaque",
     nbMaj: 1,
-    color: "#ff8686",
   },
   {
     id: 2,
@@ -32,7 +31,6 @@ export let events: Event[] = [
     statut: "Scheduled",
     transparence: "Opaque",
     nbMaj: 1,
-    color: "#0d26a2",
   },
   {
     id: 3,
@@ -45,7 +43,6 @@ export let events: Event[] = [
     statut: "Confirmed",
     transparence: "Semi-transparent",
     nbMaj: 0,
-    color: "#0d26a2",
   },
 ];
 

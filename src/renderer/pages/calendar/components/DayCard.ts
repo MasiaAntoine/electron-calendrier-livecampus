@@ -1,13 +1,7 @@
 import { format, eachDayOfInterval } from "date-fns";
 import { Event } from "../../../interface/event";
 import { getEventTitle } from "./eventTitle";
-import { categories } from "../../../resources/data/categoryList"; // Importer les catégories
-
-// Fonction pour obtenir la couleur de la catégorie
-function getCategoryColor(categoryName: string): string {
-  const category = categories.find((cat) => cat.nameCat === categoryName);
-  return category ? category.color : "#ffffff"; // Retourner une couleur par défaut si la catégorie n'est pas trouvée
-}
+import { getCategoryColor } from "../../../resources/data/categoryList";
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
   const dayDate = new Date(date.getFullYear(), date.getMonth(), day);
