@@ -1,9 +1,9 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./src/renderer/renderer.ts",
+  entry: "./src/renderer/rendererEvent.ts",
   output: {
-    filename: "renderer.js",
+    filename: "rendererEvent.js",
     path: path.resolve(__dirname, "dist/renderer"),
   },
   resolve: {
