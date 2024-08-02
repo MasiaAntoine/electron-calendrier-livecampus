@@ -1,6 +1,5 @@
 import { format, eachDayOfInterval } from "date-fns";
 import { Event } from "../../../interface/event";
-import { getEventFormHTML, setupEventForm } from "../../event/event";
 import { getEventTitle } from "./eventTitle";
 
 export function getDayHTML(day: number, date: Date, events: Event[]): string {
@@ -74,13 +73,7 @@ export function setupDayCardClickHandlers(
       const selectedDate = target.getAttribute("data-date");
 
       if (selectedDate) {
-        console.log(selectedDate);
-        // document.body.insertAdjacentHTML(
-        //   "beforeend",
-        //   getEventFormHTML(selectedDate)
-        // );
-        // setupEventForm(undefined, addEventCallback);
-        window.electron.send("open-event-window", selectedDate);
+        window.electron.send("open-event-window", { date: selectedDate });
       }
     });
   });
@@ -99,14 +92,7 @@ export function setupDayCardClickHandlers(
           (event) => event.id === parseInt(eventId)
         );
         if (eventToEdit) {
-          document.body.insertAdjacentHTML(
-            "beforeend",
-            getEventFormHTML(
-              eventToEdit.date_deb.toISOString().split("T")[0],
-              eventToEdit
-            )
-          );
-          setupEventForm(eventToEdit, editEventCallback);
+          window.electron.send("open-event-window", { event: eventToEdit });
         }
       }
     });

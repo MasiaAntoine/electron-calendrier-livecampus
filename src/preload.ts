@@ -8,15 +8,19 @@ contextBridge.exposeInMainWorld("electron", {
       "deleteEvent",
       "loadEvents",
       "open-event-window",
+      "close-event-window",
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
   },
   receive: (channel: string, func: Function) => {
-    const validChannels = ["fromMain", "eventsLoaded"];
+    const validChannels = ["fromMain", "open-event-window", "eventsLoaded"];
     if (validChannels.includes(channel)) {
-      ipcRenderer.on(channel, (event, ...args) => func(...args));
+      ipcRenderer.on(channel, (event, ...args) => {
+        func(...args);
+        console.log(args);
+      });
     }
   },
 });

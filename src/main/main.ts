@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import * as path from "path";
 
 let mainWindow: BrowserWindow;
-let eventWindow: BrowserWindow | null = null; // Ajout pour la nouvelle fenêtre
+let eventWindow: BrowserWindow | null = null;
 
 function createWindow() {
   console.log("Creating main window");
@@ -24,7 +24,7 @@ function createWindow() {
     });
 }
 
-function createEventWindow(selectedDate: string) {
+function createEventWindow(selectedDate: string | null, event?: Event) {
   if (eventWindow) return;
 
   console.log("Creating event window");
@@ -38,16 +38,15 @@ function createEventWindow(selectedDate: string) {
     },
   });
 
-  eventWindow
-    .loadFile(path.join(__dirname, "../renderer/event.html"))
-    .then(() => {
-      console.log("Event window loaded successfully");
-      // Envoyer la date sélectionnée à la fenêtre d'événements une fois chargée
-      eventWindow?.webContents.send("open-event-window", selectedDate);
-    })
-    .catch((err) => {
-      console.error("Failed to load event window:", err);
+  eventWindow.loadFile(path.join(__dirname, "../renderer/event.html"));
+
+  eventWindow.webContents.once("dom-ready", () => {
+    console.log("dom-ready");
+    eventWindow?.webContents.send("open-event-window", {
+      date: selectedDate,
+      event,
     });
+  });
 
   eventWindow.on("closed", () => {
     eventWindow = null;
@@ -68,12 +67,13 @@ app.on("activate", () => {
   }
 });
 
-// Gestion des événements IPC
-
-ipcMain.on("open-event-window", (event, selectedDate) => {
-  console.log("Received request to open event window for date:", selectedDate);
-  createEventWindow(selectedDate);
-});
+ipcMain.on(
+  "open-event-window",
+  (event, { date, event: eventData }: { date?: string; event?: Event }) => {
+    console.log("Received request to open event window:", { date, eventData });
+    createEventWindow(date || null, eventData);
+  }
+);
 
 ipcMain.on("close-event-window", () => {
   if (eventWindow) {
