@@ -14,7 +14,8 @@ function renderEventForm(
         ? formatDate(new Date(eventData.date_deb))
         : date || formatDate(new Date());
 
-    const colorValue = eventData ? eventData.color : "#ff0000";
+    // Détermine la couleur par défaut en fonction de l'événement ou une couleur par défaut
+    const colorValue = eventData ? eventData.color : "#ffffff";
 
     // Générer les options du menu déroulant à partir du JSON
     const categoryOptions = categories
@@ -76,7 +77,7 @@ function renderEventForm(
             <div class="mb-4">
               <label for="event-categorie" class="block text-sm font-medium text-gray-700">Catégorie</label>
               <div class="flex items-center ml-2">
-                <div id="color-preview" class="h-8 w-9 rounded-full border border-gray-300"></div>
+                <div id="color-preview" class="h-8 w-9 rounded-full border border-gray-300" style="background-color: ${colorValue};"></div>
                 <select id="event-categorie" name="categorie" class="mt-1 p-2 w-full border border-gray-300 rounded ml-4" required>
                   <option value="">Sélectionnez une catégorie</option>
                   ${categoryOptions}
@@ -171,7 +172,7 @@ function renderEventForm(
           statut,
           transparence,
           nbMaj,
-          color: "rien",
+          color: colorPreview ? colorPreview.style.backgroundColor : "#ffffff",
         };
 
         closeEventForm();
@@ -203,6 +204,15 @@ function renderEventForm(
           }
         }
       });
+
+      // Initialiser la couleur de l'événement lors du chargement du formulaire
+      const initialCategory = categorySelect.value;
+      const initialColor = categorySelect
+        .querySelector(`option[value="${initialCategory}"]`)
+        ?.getAttribute("data-color");
+      if (initialColor && colorPreview) {
+        colorPreview.style.backgroundColor = initialColor;
+      }
     }
   }
 }
