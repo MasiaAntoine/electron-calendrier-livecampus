@@ -29,8 +29,8 @@ function createEventWindow(selectedDate: string | null, event?: Event) {
 
   console.log("Creating event window");
   eventWindow = new BrowserWindow({
-    width: 600,
-    height: 400,
+    width: 500,
+    height: 800,
     parent: mainWindow,
     modal: true,
     webPreferences: {
