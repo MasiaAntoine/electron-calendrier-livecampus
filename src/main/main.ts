@@ -92,7 +92,7 @@ function handleExportCalendar() {
       location: "Bureau 42",
       category: "Travail",
       status: "CONFIRMED",
-      transparency: "BUSY", // Changez à une valeur valide
+      transparency: "BUSY",
       version: 1,
     },
   ];
@@ -119,8 +119,8 @@ function exportToICS(events: any[]) {
     title: event.title,
     description: event.description,
     location: event.location,
-    status: event.status, // Assurez-vous que cette valeur est 'TENTATIVE', 'CANCELLED' ou 'CONFIRMED'
-    busyStatus: event.transparency, // Assurez-vous que cette valeur est 'TENTATIVE', 'FREE', 'BUSY' ou 'OOF'
+    status: event.status,
+    busyStatus: event.transparency,
   }));
 
   createEvents(icsEvents, (error, value) => {

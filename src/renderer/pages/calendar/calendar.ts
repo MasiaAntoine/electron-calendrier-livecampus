@@ -16,8 +16,8 @@ export let events: Event[] = [
     date_fin: new Date("2024-09-01"),
     location: "Conference Room A",
     categorie: "Technologie",
-    statut: "Scheduled",
-    transparence: "Opaque",
+    statut: "CANCELLED",
+    transparence: "FREE",
     nbMaj: 1,
   },
   {
@@ -28,8 +28,8 @@ export let events: Event[] = [
     date_fin: new Date("2024-08-31"),
     location: "Conference Hall",
     categorie: "Éducation",
-    statut: "Scheduled",
-    transparence: "Opaque",
+    statut: "CONFIRMED",
+    transparence: "FREE",
     nbMaj: 1,
   },
   {
@@ -40,8 +40,8 @@ export let events: Event[] = [
     date_fin: new Date("2024-09-12"),
     location: "Beach",
     categorie: "Finance",
-    statut: "Confirmed",
-    transparence: "Semi-transparent",
+    statut: "CONFIRMED",
+    transparence: "FREE",
     nbMaj: 0,
   },
 ];

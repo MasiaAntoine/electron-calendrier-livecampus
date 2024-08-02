@@ -6,6 +6,9 @@ import {
 import { EventFormField } from "./components/eventFormField";
 import { CategorySelect } from "./components/categorySelect";
 import { ButtonGroup } from "./components/buttonGroup";
+import { Select } from "./components/eventSelect";
+import { statutOptions } from "../../resources/data/statutOptionsList";
+import { transparenceOptions } from "../../resources/data/transparenceOptionsList";
 
 const appElement = document.getElementById("event-container");
 
@@ -66,16 +69,20 @@ export function renderEventForm(
             eventData ? eventData.categorie : "",
             colorValue
           )}
-          ${EventFormField(
-            "statut",
-            "Statut",
-            eventData ? eventData.statut : ""
-          )}
-          ${EventFormField(
-            "transparence",
-            "Transparence",
-            eventData ? eventData.transparence : ""
-          )}
+          ${Select({
+            id: "event-statut",
+            name: "statut",
+            label: "Statut",
+            options: statutOptions,
+            selectedValue: eventData ? eventData.statut : "",
+          })}
+          ${Select({
+            id: "event-transparence",
+            name: "transparence",
+            label: "Transparence",
+            options: transparenceOptions,
+            selectedValue: eventData ? eventData.transparence : "",
+          })}
           ${EventFormField(
             "nbMaj",
             "Nombre de modifications",
@@ -122,10 +129,10 @@ function initializeFormEvents(actionType: "add" | "edit", eventData?: Event) {
         document.getElementById("event-categorie") as HTMLSelectElement
       ).value;
       const statut = (
-        document.getElementById("event-statut") as HTMLInputElement
+        document.getElementById("event-statut") as HTMLSelectElement
       ).value;
       const transparence = (
-        document.getElementById("event-transparence") as HTMLInputElement
+        document.getElementById("event-transparence") as HTMLSelectElement
       ).value;
       const nbMaj = parseInt(
         (document.getElementById("event-nbMaj") as HTMLInputElement).value,
