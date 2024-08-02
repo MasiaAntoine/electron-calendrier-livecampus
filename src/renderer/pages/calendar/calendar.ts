@@ -73,28 +73,10 @@ export function renderCalendar(date: Date): void {
   if (appElement) {
     appElement.innerHTML = generateCalendarHTML(date);
     setupEventListeners(currentDate, setCurrentDate);
-    setupDayCardClickHandlers(events, addNewEvent, editEvent);
+    setupDayCardClickHandlers(events);
   } else {
     console.error('Element with ID "app" not found');
   }
-}
-
-export function addNewEvent(newEvent: Event): void {
-  events.push(newEvent);
-  renderCalendar(currentDate);
-}
-
-export function editEvent(updatedEvent: Event): void {
-  const eventIndex = events.findIndex((event) => event.id === updatedEvent.id);
-  if (eventIndex > -1) {
-    events[eventIndex] = updatedEvent;
-    renderCalendar(currentDate);
-  }
-}
-
-export function deleteEvent(eventToDelete: Event): void {
-  events = events.filter((event) => event.id !== eventToDelete.id);
-  renderCalendar(currentDate);
 }
 
 window.addEventListener("resize", () => {

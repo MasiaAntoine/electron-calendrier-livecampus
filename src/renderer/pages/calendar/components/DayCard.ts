@@ -64,11 +64,7 @@ export function getDayHTML(day: number, date: Date, events: Event[]): string {
   return dayHTML;
 }
 
-export function setupDayCardClickHandlers(
-  events: Event[],
-  addEventCallback: (event: Event) => void,
-  editEventCallback: (event: Event) => void
-): void {
+export function setupDayCardClickHandlers(events: Event[]): void {
   const dayCards = document.querySelectorAll("[data-date]");
 
   dayCards.forEach((card) => {
