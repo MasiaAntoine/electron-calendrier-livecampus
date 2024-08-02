@@ -1,9 +1,5 @@
 import { Event } from "./interface/event";
-import {
-  addNewEvent,
-  editEvent,
-  deleteEvent as calendarDeleteEvent,
-} from "./pages/calendar/calendar";
+import { categories } from "./resources/data/categoryList";
 
 const appElement = document.getElementById("event-container");
 
@@ -16,9 +12,22 @@ function renderEventForm(
     const selectedDate =
       actionType === "edit" && eventData
         ? formatDate(new Date(eventData.date_deb))
-        : date || formatDate(new Date()); // Assurez-vous que `date` est utilisé
+        : date || formatDate(new Date());
 
     const colorValue = eventData ? eventData.color : "#ff0000";
+
+    // Générer les options du menu déroulant à partir du JSON
+    const categoryOptions = categories
+      .map((category) => {
+        return `<option value="${category.nameCat}" data-color="${
+          category.color
+        }" ${
+          eventData && eventData.categorie === category.nameCat
+            ? "selected"
+            : ""
+        }>${category.nameCat}</option>`;
+      })
+      .join("");
 
     appElement.innerHTML = `
         <div class="bg-white p-6 rounded shadow-lg overflow-y-auto">
@@ -66,9 +75,13 @@ function renderEventForm(
             </div>
             <div class="mb-4">
               <label for="event-categorie" class="block text-sm font-medium text-gray-700">Catégorie</label>
-              <input type="text" id="event-categorie" name="categorie" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
-                eventData ? eventData.categorie : ""
-              }">
+              <div class="flex items-center ml-2">
+                <div id="color-preview" class="h-8 w-9 rounded-full border border-gray-300"></div>
+                <select id="event-categorie" name="categorie" class="mt-1 p-2 w-full border border-gray-300 rounded ml-4" required>
+                  <option value="">Sélectionnez une catégorie</option>
+                  ${categoryOptions}
+                </select>
+              </div>
             </div>
             <div class="mb-4">
               <label for="event-statut" class="block text-sm font-medium text-gray-700">Statut</label>
@@ -87,13 +100,6 @@ function renderEventForm(
               <input type="number" id="event-nbMaj" name="nbMaj" class="mt-1 p-2 w-full border border-gray-300 rounded" value="${
                 eventData ? eventData.nbMaj : 0
               }">
-            </div>
-            <div class="mb-4 flex items-center">
-              <label for="event-color" class="block text-sm font-medium text-gray-700">Couleur</label>
-              <div class="flex items-center ml-2">
-                <input type="color" id="event-color" name="color" class="hidden" value="${colorValue}" required>
-                <div id="color-preview" class="ml-2 w-8 h-8 rounded-full border border-gray-300 cursor-pointer" style="background-color: ${colorValue};"></div>
-              </div>
             </div>
             <div class="flex justify-end space-x-4">
               ${
@@ -116,10 +122,10 @@ function renderEventForm(
     const formElement = document.getElementById("event-form");
     const cancelButton = document.getElementById("cancel-event");
     const deleteButton = document.getElementById("delete-event");
-    const colorInput = document.getElementById(
-      "event-color"
-    ) as HTMLInputElement;
     const colorPreview = document.getElementById("color-preview");
+    const categorySelect = document.getElementById(
+      "event-categorie"
+    ) as HTMLSelectElement;
 
     if (formElement) {
       formElement.addEventListener("submit", (e) => {
@@ -141,7 +147,7 @@ function renderEventForm(
           document.getElementById("event-location") as HTMLInputElement
         ).value;
         const categorie = (
-          document.getElementById("event-categorie") as HTMLInputElement
+          document.getElementById("event-categorie") as HTMLSelectElement
         ).value;
         const statut = (
           document.getElementById("event-statut") as HTMLInputElement
@@ -153,7 +159,6 @@ function renderEventForm(
           (document.getElementById("event-nbMaj") as HTMLInputElement).value,
           10
         );
-        const color = colorInput.value;
 
         const newEvent: Event = {
           id: eventData ? eventData.id : Date.now(),
@@ -166,14 +171,8 @@ function renderEventForm(
           statut,
           transparence,
           nbMaj,
-          color,
+          color: "rien",
         };
-
-        if (actionType === "edit") {
-          editEvent(newEvent);
-        } else {
-          addNewEvent(newEvent);
-        }
 
         closeEventForm();
       });
@@ -188,19 +187,21 @@ function renderEventForm(
     if (deleteButton) {
       deleteButton.addEventListener("click", () => {
         if (eventData) {
-          calendarDeleteEvent(eventData);
           closeEventForm();
         }
       });
     }
 
-    if (colorInput && colorPreview) {
-      colorInput.addEventListener("input", () => {
-        colorPreview.style.backgroundColor = colorInput.value;
-      });
-
-      colorPreview.addEventListener("click", () => {
-        colorInput.click();
+    if (categorySelect) {
+      categorySelect.addEventListener("change", () => {
+        const selectedOption =
+          categorySelect.options[categorySelect.selectedIndex];
+        const color = selectedOption.getAttribute("data-color");
+        if (color) {
+          if (colorPreview) {
+            colorPreview.style.backgroundColor = color;
+          }
+        }
       });
     }
   }
