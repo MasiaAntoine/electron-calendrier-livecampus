@@ -1,5 +1,4 @@
 import { Event } from "./interface/event";
-
 import {
   addNewEvent,
   editEvent,
@@ -8,12 +7,17 @@ import {
 
 const appElement = document.getElementById("event-container");
 
-function renderEventForm(actionType: "add" | "edit", eventData?: Event) {
+function renderEventForm(
+  actionType: "add" | "edit",
+  date?: string,
+  eventData?: Event
+) {
   if (appElement) {
     const selectedDate =
       actionType === "edit" && eventData
         ? formatDate(new Date(eventData.date_deb))
-        : new Date().toISOString().split("T")[0];
+        : date || formatDate(new Date()); // Assurez-vous que `date` est utilisé
+
     const colorValue = eventData ? eventData.color : "#ff0000";
 
     appElement.innerHTML = `
@@ -212,9 +216,9 @@ window.electron.receive(
   (data: { date?: string; event?: Event }) => {
     if (data.event) {
       console.log("edit", data.event);
-      renderEventForm("edit", data.event);
+      renderEventForm("edit", undefined, data.event);
     } else if (data.date) {
-      renderEventForm("add");
+      renderEventForm("add", data.date);
       console.log("add");
     }
   }
