@@ -29,8 +29,13 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "@types/ical": "^0.8.3",
     "date-fns": "^3.6.0",
     "fs-extra": "^11.2.0",
+    "ical": "^0.8.0",
+    "ical-generator": "^7.1.0",
+    "ical.js": "^2.0.1",
+    "ics": "^3.7.6",
     "path-browserify": "^1.0.1"
   }
 }
