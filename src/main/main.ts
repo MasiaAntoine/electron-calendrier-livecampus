@@ -2,6 +2,43 @@ import { app, BrowserWindow, ipcMain, Menu, dialog } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import { createEvents, EventAttributes } from "ics";
+import { open, Database } from "sqlite";
+import sqlite3 from "sqlite3";
+let db: Database<sqlite3.Database, sqlite3.Statement>;
+
+async function initDatabase() {
+  db = await open({
+    filename: path.join(__dirname, "events.db"),
+    driver: sqlite3.Database,
+  });
+
+  //await db.exec(`
+  //  CREATE TABLE IF NOT EXISTS events (
+  //    id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //    titre TEXT,
+  //    description TEXT,
+  //    date_deb TEXT,
+  //    date_fin TEXT,
+  //    location TEXT,
+  //    categorie TEXT,
+  //    statut TEXT,
+  //    transparence TEXT,
+  //    nbMaj INTEGER,
+  //  )
+  //`);
+}
+
+async function getEvents() {
+  console.log("fetch");
+  const events = await db.all("SELECT * FROM events");
+  const data = events.map((event: any) => ({
+    ...event,
+    date_deb: new Date(event.date_deb),
+    date_fin: new Date(event.date_fin),
+  }));
+  console.log(data);
+  return data;
+}
 
 let mainWindow: BrowserWindow;
 let eventWindow: BrowserWindow | null = null;
@@ -49,7 +86,7 @@ function createWindow() {
       ],
     },
   ]);
-  Menu.setApplicationMenu(menu);
+  //Menu.setApplicationMenu(menu);
 }
 
 function createEventWindow(selectedDate: string | null, event?: any) {
@@ -155,7 +192,11 @@ function handleImportCalendar() {
   }
 }
 
-app.on("ready", createWindow);
+app.on("ready", async () => {
+  await initDatabase();
+  createWindow();
+});
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -177,7 +218,59 @@ ipcMain.on(
 );
 
 ipcMain.on("close-event-window", () => {
+  console.log("close");
   if (eventWindow) {
     eventWindow.close();
   }
+});
+
+ipcMain.on("event-form-submit", () => {
+  console.log("ok");
+});
+
+ipcMain.on("event-delete", async (event, id) => {
+  try {
+    console.log("Received delete request for ID:", id);
+    await db.run("DELETE FROM events WHERE id = ?", [id]);
+    console.log("Event with ID", id, "deleted successfully");
+  } catch (error) {
+    console.error("Error deleting event:", error);
+  }
+});
+
+ipcMain.on("event-update", async (event, updatedEvent) => {
+  try {
+    console.log("Received update request for event:", updatedEvent);
+    const { id, titre, description, date_deb, date_fin, location, categorie, statut, transparence, nbMaj } = updatedEvent;
+    await db.run(
+      `UPDATE events
+       SET titre = ?, description = ?, date_deb = ?, date_fin = ?, location = ?, categorie = ?, statut = ?, transparence = ?, nbMaj = ?
+       WHERE id = ?`,
+      [titre, description, date_deb, date_fin, location, categorie, statut, transparence, nbMaj, id]
+    );
+    console.log("Event with ID", id, "updated successfully");
+  } catch (error) {
+    console.error("Error updating event:", error);
+  }
+});
+
+ipcMain.on("event-add", async (event, newEvent) => {
+  try {
+    console.log("Received add request for event:", newEvent);
+    const { titre, description, date_deb, date_fin, location, categorie, statut, transparence, nbMaj } = newEvent;
+    await db.run(
+      `INSERT INTO events (titre, description, date_deb, date_fin, location, categorie, statut, transparence, nbMaj)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [titre, description, date_deb, date_fin, location, categorie, statut, transparence, nbMaj]
+    );
+    console.log("Event added successfully");
+  } catch (error) {
+    console.error("Error adding event:", error);
+  }
+});
+
+ipcMain.handle('request-data', async (event) => {
+    console.log("fetch1");
+    const data = await getEvents();
+    return data;
 });

@@ -36,6 +36,8 @@
     "ical-generator": "^7.1.0",
     "ical.js": "^2.0.1",
     "ics": "^3.7.6",
-    "path-browserify": "^1.0.1"
+    "path-browserify": "^1.0.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   }
 }

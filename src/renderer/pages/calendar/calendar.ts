@@ -7,44 +7,19 @@ import {
   setupEventListeners,
 } from "./components/navigationButtons";
 
-export let events: Event[] = [
-  {
-    id: 1,
-    titre: "Meeting",
-    description: "Team meeting",
-    date_deb: new Date("2024-08-31"),
-    date_fin: new Date("2024-09-01"),
-    location: "Conference Room A",
-    categorie: "Technologie",
-    statut: "CANCELLED",
-    transparence: "FREE",
-    nbMaj: 1,
-  },
-  {
-    id: 2,
-    titre: "Conference",
-    description: "Annual conference",
-    date_deb: new Date("2024-08-29"),
-    date_fin: new Date("2024-08-31"),
-    location: "Conference Hall",
-    categorie: "Éducation",
-    statut: "CONFIRMED",
-    transparence: "FREE",
-    nbMaj: 1,
-  },
-  {
-    id: 3,
-    titre: "Holiday",
-    description: "Summer vacation",
-    date_deb: new Date("2024-09-08"),
-    date_fin: new Date("2024-09-12"),
-    location: "Beach",
-    categorie: "Finance",
-    statut: "CONFIRMED",
-    transparence: "FREE",
-    nbMaj: 0,
-  },
-];
+export let events: Event[] = [];
+
+async function fetchEvents() {
+  const fetchedEvents: any[] = await window.api.requestData();
+  console.log(fetchedEvents);
+  const events = fetchedEvents.map(event => ({
+    ...event,
+    date_deb: new Date(event.date_deb),
+    date_fin: new Date(event.date_fin),
+  }));
+  console.log(events);
+  return events;
+}
 
 export let currentDate: Date = new Date();
 
@@ -68,7 +43,10 @@ function generateCalendarHTML(date: Date): string {
   return calendarHTML;
 }
 
-export function renderCalendar(date: Date): void {
+export async function renderCalendar(date: Date): Promise<void> {
+  console.log("render");
+  events = await fetchEvents();
+  console.log(events)
   const appElement = document.getElementById("app");
   if (appElement) {
     appElement.innerHTML = generateCalendarHTML(date);

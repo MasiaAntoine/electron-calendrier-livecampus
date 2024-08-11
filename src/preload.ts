@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electron", {
   send: (channel: string, data: any) => {
-    const validChannels = ["open-event-window", "close-event-window"];
+    const validChannels = ["open-event-window", "close-event-window", "event-delete", "event-update", "event-add"];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
     }
@@ -16,4 +16,10 @@ contextBridge.exposeInMainWorld("electron", {
       });
     }
   },
+});
+
+contextBridge.exposeInMainWorld('api', {
+    requestData: async () => {
+        return await ipcRenderer.invoke('request-data');
+    }
 });

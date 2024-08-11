@@ -109,8 +109,8 @@ function initializeFormEvents(actionType: "add" | "edit", eventData?: Event) {
 
   if (formElement) {
     formElement.addEventListener("submit", (e) => {
+      console.log("submited");
       e.preventDefault();
-
       const title = (document.getElementById("event-title") as HTMLInputElement)
         .value;
       const description = (
@@ -151,9 +151,14 @@ function initializeFormEvents(actionType: "add" | "edit", eventData?: Event) {
         transparence,
         nbMaj,
       };
-
+      if (actionType == "edit") {
+        newEvent.nbMaj += 1;
+        window.electron.send("event-update", newEvent);
+      } else {
+        window.electron.send("event-add", newEvent);
+      }
       // Envoyer l'événement modifié ou ajouté
-      window.electron.send("event-form-submit", newEvent);
+      
       closeEventForm();
     });
   }
